@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Login Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .floating-label {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: white;
+            padding: 0 8px;
+            color: #6b7280;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            font-size: 16px;
+        }
+
+        .form-input:focus + .floating-label,
+        .form-input:not(:placeholder-shown) + .floating-label {
+            top: 0;
+            font-size: 12px;
+            color: #667eea;
+            font-weight: 500;
+        }
+
+        .form-input {
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            outline: none;
+        }
+
+        .form-input:invalid {
+            border-color: #ef4444;
+        }
+
+        .form-input:invalid:focus {
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            transform: none;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background-color: #f3f4f6;
+            transform: translateY(-1px);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #6b7280;
+            transition: color 0.3s ease;
+        }
+
+        .password-toggle:hover {
+            color: #667eea;
+        }
+
+        /* Mobile First - Small phones (320px - 480px) */
+        @media (max-width: 480px) {
+            body {
+                padding: 0.5rem;
+            }
+
+            .login-container {
+                margin: 0;
+                padding: 1.25rem;
+                border-radius: 1rem;
+                min-height: auto;
+            }
+
+            .floating-label {
+                font-size: 13px;
+                left: 10px;
+            }
+            
+            .form-input:focus + .floating-label,
+            .form-input:not(:placeholder-shown) + .floating-label {
+                font-size: 10px;
+            }
+
+            .form-input {
+                padding: 0.75rem;
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+
+            h1 {
+                font-size: 1.5rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .text-lg {
+                font-size: 0.875rem;
+            }
+
+            .w-16.h-16 {
+                width: 3rem;
+                height: 3rem;
+            }
+
+            .w-8.h-8 {
+                width: 1.5rem;
+                height: 1.5rem;
+            }
+
+            .space-y-6 > * + * {
+                margin-top: 1rem;
+            }
+
+            .btn-primary, .btn-secondary {
+                padding: 0.875rem 1rem;
+                font-size: 0.875rem;
+                min-height: 48px;
+            }
+
+            .password-toggle {
+                right: 10px;
+            }
+
+            .text-sm {
+                font-size: 0.75rem;
+            }
+        }
+
+        /* Mobile - Regular phones (481px - 640px) */
+        @media (min-width: 481px) and (max-width: 640px) {
+            body {
+                padding: 1rem;
+            }
+
+            .login-container {
+                margin: 0;
+                padding: 1.5rem;
+                border-radius: 1.25rem;
+            }
+
+            .floating-label {
+                font-size: 14px;
+            }
+            
+            .form-input:focus + .floating-label,
+            .form-input:not(:placeholder-shown) + .floating-label {
+                font-size: 11px;
+            }
+
+            .form-input {
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+
+            h1 {
+                font-size: 1.75rem;
+            }
+
+            .text-lg {
+                font-size: 0.9375rem;
+            }
+
+            .btn-primary, .btn-secondary {
+                min-height: 44px;
+            }
+        }
+
+        /* Tablet Portrait (641px - 768px) */
+        @media (min-width: 641px) and (max-width: 768px) {
+            .login-container {
+                max-width: 26rem;
+                padding: 2rem;
+                margin: 0 auto;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .form-input {
+                padding: 0.875rem 1rem;
+            }
+
+            .btn-primary, .btn-secondary {
+                padding: 0.875rem 1.5rem;
+            }
+        }
+
+        /* Tablet Landscape (769px - 1024px) */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .login-container {
+                max-width: 28rem;
+                padding: 2.5rem;
+                margin: 0 auto;
+            }
+
+            h1 {
+                font-size: 2.25rem;
+            }
+
+            .form-input {
+                padding: 1rem;
+            }
+
+            .btn-primary, .btn-secondary {
+                padding: 1rem 2rem;
+            }
+        }
+
+        /* Desktop Small (1025px - 1280px) */
+        @media (min-width: 1025px) and (max-width: 1280px) {
+            .login-container {
+                max-width: 32rem;
+                padding: 3rem;
+                margin: 0 auto;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .form-input {
+                padding: 1rem 1.25rem;
+            }
+
+            .btn-primary, .btn-secondary {
+                padding: 1rem 2rem;
+            }
+        }
+
+        /* Desktop Large (1281px+) */
+        @media (min-width: 1281px) {
+            .login-container {
+                max-width: 36rem;
+                padding: 3.5rem;
+                margin: 0 auto;
+            }
+
+            h1 {
+                font-size: 3rem;
+            }
+
+            .form-input {
+                padding: 1.25rem 1.5rem;
+            }
+
+            .btn-primary, .btn-secondary {
+                padding: 1.25rem 2.5rem;
+                font-size: 1.125rem;
+            }
+
+            .floating-label {
+                font-size: 18px;
+            }
+            
+            .form-input:focus + .floating-label,
+            .form-input:not(:placeholder-shown) + .floating-label {
+                font-size: 14px;
+            }
+        }
+
+        /* Ultra-wide screens (1440px+) */
+        @media (min-width: 1440px) {
+            .login-container {
+                max-width: 40rem;
+                padding: 4rem;
+            }
+        }
+
+        /* Height-based optimizations for landscape phones */
+        @media (max-height: 500px) and (orientation: landscape) {
+            body {
+                padding: 0.5rem 1rem;
+            }
+
+            .login-container {
+                padding: 1rem;
+            }
+
+            .w-16.h-16 {
+                width: 2.5rem;
+                height: 2.5rem;
+            }
+
+            h1 {
+                font-size: 1.25rem;
+                margin-bottom: 0.25rem;
+            }
+
+            .text-lg {
+                font-size: 0.75rem;
+            }
+
+            .space-y-6 > * + * {
+                margin-top: 0.75rem;
+            }
+
+            .space-y-8 > * + * {
+                margin-top: 1rem;
+            }
+
+            .mb-8 {
+                margin-bottom: 1rem;
+            }
+
+            .mb-6 {
+                margin-bottom: 0.75rem;
+            }
+        }
+
+        /* Touch-friendly improvements */
+        @media (hover: none) and (pointer: coarse) {
+            .form-input, .btn-primary, .btn-secondary {
+                min-height: 48px;
+            }
+
+            .password-toggle {
+                padding: 0.5rem;
+                min-width: 44px;
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            /* Larger touch targets for checkboxes and links */
+            input[type="checkbox"] {
+                width: 1.25rem;
+                height: 1.25rem;
+            }
+
+            label[for="rememberMe"] {
+                padding: 0.5rem 0;
+            }
+
+            a {
+                padding: 0.5rem 0;
+                display: inline-block;
+            }
+        }
+
+        /* High DPI displays */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .login-container {
+                border-width: 0.5px;
+            }
+        }
+
+        /* Reduced motion preferences */
+        @media (prefers-reduced-motion: reduce) {
+            .fade-in {
+                animation: none;
+            }
+
+            .shake {
+                animation: none;
+            }
+
+            .loading-spinner {
+                animation: none;
+            }
+
+            .btn-primary:hover,
+            .btn-secondary:hover {
+                transform: none;
+            }
+
+            * {
+                transition: none !important;
+            }
+        }
+
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            .login-container {
+                background: rgba(31, 41, 55, 0.95);
+                color: #f9fafb;
+            }
+
+            .floating-label {
+                background: rgba(31, 41, 55, 0.95);
+                color: #d1d5db;
+            }
+
+            .form-input:focus + .floating-label,
+            .form-input:not(:placeholder-shown) + .floating-label {
+                color: #818cf8;
+            }
+
+            .form-input {
+                background: rgba(55, 65, 81, 0.5);
+                border-color: #4b5563;
+                color: #f9fafb;
+            }
+
+            .form-input:focus {
+                border-color: #818cf8;
+                background: rgba(55, 65, 81, 0.8);
+            }
+
+            .text-gray-900 {
+                color: #f9fafb !important;
+            }
+
+            .text-gray-600 {
+                color: #d1d5db !important;
+            }
+
+            .text-gray-700 {
+                color: #e5e7eb !important;
+            }
+
+            .bg-gray-50 {
+                background-color: rgba(55, 65, 81, 0.5) !important;
+            }
+
+            .border-gray-300 {
+                border-color: #4b5563 !important;
+            }
+        }
+
+        /* Loading animation */
+        .loading-spinner {
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen flex items-center justify-center py-8">
+    <div class="w-full max-w-md">
+        <!-- Login Form -->
+        <div id="loginForm" class="login-container rounded-2xl shadow-2xl p-8 fade-in">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full shadow-lg mb-4">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                    </svg>
+                </div>
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h1>
+                <p class="text-gray-600 text-lg">Sign in to your student portal</p>
+            </div>
+
+            <!-- Login Form -->
+            <form id="studentLoginForm" class="space-y-6">
+                <!-- Username Field -->
+                <div class="input-group">
+                    <input 
+                        type="text" 
+                        id="username" 
+                        name="username"
+                        class="form-input w-full px-4 py-3 border-2 border-gray-300 rounded-lg text-gray-900 placeholder-transparent"
+                        placeholder="Username"
+                        required
+                        autocomplete="username"
+                    >
+                    <label for="username" class="floating-label">Username</label>
+                    <div class="mt-1 text-xs text-red-500 hidden" id="usernameError">
+                        Please enter your username
+                    </div>
+                </div>
+
+                <!-- Password Field -->
+                <div class="input-group">
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password"
+                        class="form-input w-full px-4 py-3 pr-12 border-2 border-gray-300 rounded-lg text-gray-900 placeholder-transparent"
+                        placeholder="Password"
+                        required
+                        autocomplete="current-password"
+                    >
+                    <label for="password" class="floating-label">Password</label>
+                    <button type="button" class="password-toggle" onclick="togglePassword()">
+                        <svg id="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                    </button>
+                    <div class="mt-1 text-xs text-red-500 hidden" id="passwordError">
+                        Please enter your password
+                    </div>
+                </div>
+
+                <!-- Remember Me & Forgot Password -->
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <input 
+                            type="checkbox" 
+                            id="rememberMe" 
+                            name="rememberMe"
+                            class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                        >
+                        <label for="rememberMe" class="ml-2 text-sm text-gray-700">
+                            Remember me
+                        </label>
+                    </div>
+                    <a href="#" class="text-sm text-indigo-600 hover:text-indigo-800 font-medium" onclick="showForgotPassword()">
+                        Forgot password?
+                    </a>
+                </div>
+
+                <!-- Login Button -->
+                <button 
+                    type="submit" 
+                    id="loginButton"
+                    class="btn-primary w-full px-6 py-3 text-white font-semibold rounded-lg shadow-lg"
+                >
+                    <span id="loginButtonText">Sign In</span>
+                    <div id="loginSpinner" class="loading-spinner w-5 h-5 mx-auto hidden"></div>
+                </button>
+
+                <!-- Error Message -->
+                <div id="loginError" class="hidden bg-red-50 border border-red-200 rounded-lg p-4">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span class="text-red-700 text-sm" id="loginErrorText">Invalid username or password</span>
+                    </div>
+                </div>
+
+                <!-- Divider -->
+                <div class="relative">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-gray-300"></div>
+                    </div>
+                    <div class="relative flex justify-center text-sm">
+                        <span class="px-2 bg-white text-gray-500">Don't have an account?</span>
+                    </div>
+                </div>
+
+                <!-- Register Link -->
+                <button 
+                    type="button" 
+                    class="btn-secondary w-full px-6 py-3 text-gray-700 font-semibold rounded-lg border-2 border-gray-300"
+                    onclick="showRegisterInfo()"
+                >
+                    Create New Account
+                </button>
+            </form>
+        </div>
+
+        <!-- Success Message (Hidden by default) -->
+        <div id="successMessage" class="hidden login-container rounded-2xl shadow-2xl p-8 text-center fade-in">
+            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-900 mb-2">Welcome Back!</h2>
+            <p class="text-gray-600 mb-6">You have successfully logged into your student portal.</p>
+            <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                <p class="text-sm text-gray-700">
+                    <strong>Logged in as:</strong> <span id="loggedInUser" class="font-medium"></span><br>
+                    <strong>Last login:</strong> <span id="lastLogin" class="font-medium"></span>
+                </p>
+            </div>
+            <div class="space-y-3">
+                <button onclick="goToDashboard()" class="btn-primary w-full px-6 py-3 text-white font-semibold rounded-lg shadow-lg">
+                    Go to Dashboard
+                </button>
+                <button onclick="logout()" class="btn-secondary w-full px-6 py-3 text-gray-700 font-semibold rounded-lg border-2 border-gray-300">
+                    Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- Forgot Password Modal (Hidden by default) -->
+        <div id="forgotPasswordModal" class="hidden login-container rounded-2xl shadow-2xl p-8 fade-in">
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-3.586l4.293-4.293a1 1 0 01.707-.293h2.414L8.586 9.414A2 2 0 117 8l1.293 1.293 2.414-2.414A6 6 0 0115 7z"></path>
+                    </svg>
+                </div>
+                <h2 class="text-xl font-bold text-gray-900 mb-2">Reset Password</h2>
+                <p class="text-gray-600 text-sm">Enter your username to receive password reset instructions</p>
+            </div>
+
+            <form id="forgotPasswordForm" class="space-y-4">
+                <div class="input-group">
+                    <input 
+                        type="text" 
+                        id="resetUsername" 
+                        name="resetUsername"
+                        class="form-input w-full px-4 py-3 border-2 border-gray-300 rounded-lg text-gray-900 placeholder-transparent"
+                        placeholder="Username"
+                        required
+                    >
+                    <label for="resetUsername" class="floating-label">Username</label>
+                </div>
+
+                <div class="flex space-x-3">
+                    <button 
+                        type="button" 
+                        onclick="hideForgotPassword()"
+                        class="btn-secondary flex-1 px-4 py-3 text-gray-700 font-semibold rounded-lg border-2 border-gray-300"
+                    >
+                        Cancel
+                    </button>
+                    <button 
+                        type="submit"
+                        class="btn-primary flex-1 px-4 py-3 text-white font-semibold rounded-lg shadow-lg"
+                    >
+                        Send Reset Link
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Demo credentials for testing
+        const validCredentials = {
+            'student123': 'password123',
+            'john_doe': 'mypassword',
+            'jane_smith': 'student2024',
+            'admin': 'admin123'
+        };
+
+        // Toggle password visibility
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const eyeIcon = document.getElementById('eyeIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path>
+                `;
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                `;
+            }
+        }
+
+        // Show/hide forgot password modal
+        function showForgotPassword() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('forgotPasswordModal').classList.remove('hidden');
+        }
+
+        function hideForgotPassword() {
+            document.getElementById('forgotPasswordModal').classList.add('hidden');
+            document.getElementById('loginForm').classList.remove('hidden');
+        }
+
+        // Show register info
+        function showRegisterInfo() {
+            showNotification('Registration is available through the student registration portal. Contact your school administrator for access.', 'info');
+        }
+
+        // Validate form fields
+        function validateField(fieldId, errorId, message) {
+            const field = document.getElementById(fieldId);
+            const error = document.getElementById(errorId);
+            
+            if (!field.value.trim()) {
+                field.classList.add('border-red-500');
+                field.classList.remove('border-green-500');
+                error.textContent = message;
+                error.classList.remove('hidden');
+                return false;
+            } else {
+                field.classList.remove('border-red-500');
+                field.classList.add('border-green-500');
+                error.classList.add('hidden');
+                return true;
+            }
+        }
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg max-w-sm transform transition-all duration-300 translate-x-full`;
+            
+            if (type === 'error') {
+                notification.classList.add('bg-red-500', 'text-white');
+            } else if (type === 'success') {
+                notification.classList.add('bg-green-500', 'text-white');
+            } else {
+                notification.classList.add('bg-blue-500', 'text-white');
+            }
+            
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <span class="flex-1">${message}</span>
+                    <button onclick="this.parentElement.parentElement.remove()" class="ml-2 text-white hover:text-gray-200">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+            }, 100);
+            
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => {
+                    if (notification.parentElement) {
+                        notification.remove();
+                    }
+                }, 300);
+            }, 5000);
+        }
+
+        // Login form submission
+        document.getElementById('studentLoginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            
+            // Validate fields
+            const isUsernameValid = validateField('username', 'usernameError', 'Please enter your username');
+            const isPasswordValid = validateField('password', 'passwordError', 'Please enter your password');
+            
+            if (!isUsernameValid || !isPasswordValid) {
+                // Shake the form
+                document.getElementById('loginForm').classList.add('shake');
+                setTimeout(() => {
+                    document.getElementById('loginForm').classList.remove('shake');
+                }, 500);
+                return;
+            }
+
+            // Show loading state
+            const loginButton = document.getElementById('loginButton');
+            const loginButtonText = document.getElementById('loginButtonText');
+            const loginSpinner = document.getElementById('loginSpinner');
+            const loginError = document.getElementById('loginError');
+            
+            loginButton.disabled = true;
+            loginButtonText.classList.add('hidden');
+            loginSpinner.classList.remove('hidden');
+            loginError.classList.add('hidden');
+
+            // Simulate authentication delay
+            setTimeout(() => {
+                // Check credentials
+                if (validCredentials[username] && validCredentials[username] === password) {
+                    // Successful login
+                    document.getElementById('loginForm').classList.add('hidden');
+                    document.getElementById('successMessage').classList.remove('hidden');
+                    
+                    // Update success message with user info
+                    document.getElementById('loggedInUser').textContent = username;
+                    document.getElementById('lastLogin').textContent = new Date().toLocaleString();
+                    
+                    showNotification('Login successful! Welcome back.', 'success');
+                    
+                    // Remember me functionality
+                    const rememberMe = document.getElementById('rememberMe').checked;
+                    if (rememberMe) {
+                        localStorage.setItem('rememberedUser', username);
+                    }
+                } else {
+                    // Failed login
+                    loginError.classList.remove('hidden');
+                    document.getElementById('loginErrorText').textContent = 'Invalid username or password. Please try again.';
+                    
+                    // Shake the form
+                    document.getElementById('loginForm').classList.add('shake');
+                    setTimeout(() => {
+                        document.getElementById('loginForm').classList.remove('shake');
+                    }, 500);
+                    
+                    // Clear password field
+                    document.getElementById('password').value = '';
+                    document.getElementById('password').classList.remove('border-green-500');
+                }
+                
+                // Reset button state
+                loginButton.disabled = false;
+                loginButtonText.classList.remove('hidden');
+                loginSpinner.classList.add('hidden');
+            }, 1500);
+        });
+
+        // Forgot password form submission
+        document.getElementById('forgotPasswordForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const resetUsername = document.getElementById('resetUsername').value.trim();
+            
+            if (!resetUsername) {
+                showNotification('Please enter your username', 'error');
+                return;
+            }
+
+            // Simulate sending reset email
+            showNotification('Password reset instructions have been sent to your registered email address.', 'success');
+            hideForgotPassword();
+            document.getElementById('resetUsername').value = '';
+        });
+
+        // Dashboard and logout functions
+        function goToDashboard() {
+            showNotification('Redirecting to student dashboard...', 'info');
+            // In a real application, this would redirect to the dashboard
+            setTimeout(() => {
+                showNotification('Dashboard feature coming soon!', 'info');
+            }, 1000);
+        }
+
+        function logout() {
+            // Clear remembered user
+            localStorage.removeItem('rememberedUser');
+            
+            // Reset form
+            document.getElementById('studentLoginForm').reset();
+            document.getElementById('successMessage').classList.add('hidden');
+            document.getElementById('loginForm').classList.remove('hidden');
+            
+            // Clear field styles
+            document.querySelectorAll('.form-input').forEach(input => {
+                input.classList.remove('border-red-500', 'border-green-500');
+            });
+            
+            showNotification('You have been logged out successfully.', 'success');
+        }
+
+        // Real-time validation
+        document.addEventListener('input', function(e) {
+            if (e.target.classList.contains('form-input')) {
+                if (e.target.value.trim()) {
+                    e.target.classList.remove('border-red-500');
+                    e.target.classList.add('border-green-500');
+                } else {
+                    e.target.classList.remove('border-green-500');
+                }
+            }
+        });
+
+        // Load remembered user on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const rememberedUser = localStorage.getItem('rememberedUser');
+            if (rememberedUser) {
+                document.getElementById('username').value = rememberedUser;
+                document.getElementById('rememberMe').checked = true;
+                // Trigger the floating label
+                document.getElementById('username').classList.add('border-green-500');
+            }
+        });
+
+        // Demo credentials info
+        setTimeout(() => {
+            showNotification('Demo Login - Try: username "student123" with password "password123"', 'info');
+        }, 2000);
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97a317b5a57c2b12',t:'MTc1NzA0NzY4OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
